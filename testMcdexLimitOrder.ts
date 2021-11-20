@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+const BigNumber = require('bignumber.js') 
 import { ethers, Wallet } from 'ethers'
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 
@@ -248,7 +248,7 @@ async function buildOrderRequestParamsDatas() {
     chainID: Number(421611),
     orderType: OrderTypeParams.LimitOrder,
     isCloseOnly: false,
-    liquidityPoolAddress: '0xc32a2dfee97e2babc90a2b5e6aef41e789ef2e13'.toLowerCase(),
+    liquidityPoolAddress: '0xdb282bbace4e375ff2901b84aceb33016d0d663d'.toLowerCase(),
     perpetualIndex: 0,
     brokerAddress: '0xbCCF6C081d9aa6E8B85602C04e66c5405D9be4A7'.toLowerCase(),
     relayerAddress: '0xd595f7c2c071d3fd8f5587931edf34e92f9ad39f'.toLowerCase(),
@@ -306,7 +306,7 @@ async function buildOrderRequestParamsDatas() {
 export class APIClient {
   protected axios: AxiosInstance
 
-  constructor(serverUrl: string, timeout = 10) {
+  constructor(serverUrl: string, timeout = 2000000000000) {
     this.axios = axios.create({
       baseURL: serverUrl,
       timeout: timeout,
@@ -340,10 +340,14 @@ export async function placeOrder(requestParams: OrderApiRequestParams) {
 async function PlaceApiOrder() {
     //构建挂单需要的参数
   let apiParams = await buildOrderRequestParamsDatas()
+  console.log(apiParams);
+  
   //调用挂单函数，并获取结果
-  const response = placeOrder(apiParams)
+  const response = await placeOrder(apiParams)
   console.log(response)
 }
 
 // 进行挂单交易的函数
-PlaceApiOrder()
+PlaceApiOrder().catch((error) => {
+  console.error(error)
+})
